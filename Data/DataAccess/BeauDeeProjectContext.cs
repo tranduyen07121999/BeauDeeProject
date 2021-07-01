@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore.Metadata;
 #nullable disable
 
 namespace Data.DataAccess
-
 {
     public partial class BeauDeeProjectContext : DbContext
     {
@@ -31,7 +30,9 @@ namespace Data.DataAccess
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-           
+            if (!optionsBuilder.IsConfigured)
+            {
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -46,37 +47,37 @@ namespace Data.DataAccess
                     .WithMany(p => p.Bookings)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Bookings__UserId__38996AB5");
+                    .HasConstraintName("FK__Bookings__UserId__398D8EEE");
             });
 
             modelBuilder.Entity<BookingDetail>(entity =>
             {
                 entity.HasKey(e => new { e.ServiceId, e.BookingId })
-                    .HasName("PK__BookingD__0222E1A41C90D6A1");
+                    .HasName("PK__BookingD__0222E1A477FECC61");
 
                 entity.HasOne(d => d.Booking)
                     .WithMany(p => p.BookingDetails)
                     .HasForeignKey(d => d.BookingId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__BookingDe__Booki__3C69FB99");
+                    .HasConstraintName("FK__BookingDe__Booki__3D5E1FD2");
 
                 entity.HasOne(d => d.Product)
                     .WithMany(p => p.BookingDetails)
                     .HasForeignKey(d => d.ProductId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__BookingDe__Produ__3E52440B");
+                    .HasConstraintName("FK__BookingDe__Produ__3F466844");
 
                 entity.HasOne(d => d.Service)
                     .WithMany(p => p.BookingDetails)
                     .HasForeignKey(d => d.ServiceId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__BookingDe__Servi__3B75D760");
+                    .HasConstraintName("FK__BookingDe__Servi__3C69FB99");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.BookingDetails)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__BookingDe__UserI__3D5E1FD2");
+                    .HasConstraintName("FK__BookingDe__UserI__3E52440B");
             });
 
             modelBuilder.Entity<Product>(entity =>
@@ -108,7 +109,7 @@ namespace Data.DataAccess
                     .WithMany(p => p.Products)
                     .HasForeignKey(d => d.ServiceId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Products__Servic__300424B4");
+                    .HasConstraintName("FK__Products__Servic__30F848ED");
             });
 
             modelBuilder.Entity<Role>(entity =>
@@ -157,10 +158,13 @@ namespace Data.DataAccess
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasIndex(e => e.Phone, "UQ__Users__5C7E359EF2E2C277")
+                entity.HasIndex(e => e.Username, "UQ__Users__536C85E457DA7CAE")
                     .IsUnique();
 
-                entity.HasIndex(e => e.Email, "UQ__Users__A9D10534D26964DE")
+                entity.HasIndex(e => e.Phone, "UQ__Users__5C7E359E9E95F635")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.Email, "UQ__Users__A9D1053400B31FA8")
                     .IsUnique();
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
@@ -183,12 +187,17 @@ namespace Data.DataAccess
                     .IsRequired()
                     .HasMaxLength(256);
 
+                entity.Property(e => e.Password)
+                    .IsRequired()
+                    .HasMaxLength(256)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Phone)
                     .IsRequired()
                     .HasMaxLength(256)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Role)
+                entity.Property(e => e.Username)
                     .IsRequired()
                     .HasMaxLength(256)
                     .IsUnicode(false);
@@ -197,7 +206,7 @@ namespace Data.DataAccess
             modelBuilder.Entity<UserRole>(entity =>
             {
                 entity.HasKey(e => new { e.UserId, e.RoleId })
-                    .HasName("PK__UserRole__AF2760ADBF5A3D90");
+                    .HasName("PK__UserRole__AF2760AD38BFA0FE");
 
                 entity.ToTable("UserRole");
 
@@ -205,19 +214,19 @@ namespace Data.DataAccess
                     .WithMany(p => p.UserRoles)
                     .HasForeignKey(d => d.RoleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UserRole__RoleId__35BCFE0A");
+                    .HasConstraintName("FK__UserRole__RoleId__36B12243");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.UserRoles)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UserRole__UserId__34C8D9D1");
+                    .HasConstraintName("FK__UserRole__UserId__35BCFE0A");
             });
 
             modelBuilder.Entity<UserStatus>(entity =>
             {
                 entity.HasKey(e => new { e.StatusId, e.UserId })
-                    .HasName("PK__UserStat__1996ACA7D6B19EF6");
+                    .HasName("PK__UserStat__1996ACA7D4164102");
 
                 entity.ToTable("UserStatus");
 
@@ -225,13 +234,13 @@ namespace Data.DataAccess
                     .WithMany(p => p.UserStatuses)
                     .HasForeignKey(d => d.StatusId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UserStatu__Statu__2A4B4B5E");
+                    .HasConstraintName("FK__UserStatu__Statu__2B3F6F97");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.UserStatuses)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UserStatu__UserI__2B3F6F97");
+                    .HasConstraintName("FK__UserStatu__UserI__2C3393D0");
             });
 
             OnModelCreatingPartial(modelBuilder);

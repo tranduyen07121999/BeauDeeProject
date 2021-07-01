@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Application.Configurations.Middleware;
 using Application.Interfaces;
 using Data.RequestModels;
 using Data.ResponseModels;
@@ -42,7 +43,7 @@ namespace JwtAuthentication.Controllers
         }
         [HttpPut]
         [Route("Products/Update")]
-        public async Task<ResponseModel<ProductResponse>> UpdateProduct([FromQuery] Guid id, ProductRequest model)
+        public async Task<ResponseModel<ProductResponse>> UpdateProduct(Guid id, ProductRequest model)
         {
             return await _service.UpdateProduct(id, model);
         }

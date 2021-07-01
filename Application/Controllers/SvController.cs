@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Configurations.Middleware;
+using Application.Interfaces;
 using Data.RequestModels;
 using Data.ResponseModels;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,8 @@ namespace JwtAuthentication.Controllers
         {
             _service = service;
         }
+
+        [Authorize("Admin")]
         [HttpGet]
         [Route("Services/GetAll")]
         public async Task<ResponseModel<ServiceResponse>> GetAllProduct([FromQuery] PaginationRequest model)
@@ -37,7 +40,7 @@ namespace JwtAuthentication.Controllers
         }
         [HttpPut]
         [Route("Services/Update")]
-        public async Task<ResponseModel<ServiceResponse>> UpdateService([FromQuery] Guid id, ServiceRequest model)
+        public async Task<ResponseModel<ServiceResponse>> UpdateService(Guid id, ServiceRequest model)
         {
             return await _service.UpdateService(id, model);
         }
