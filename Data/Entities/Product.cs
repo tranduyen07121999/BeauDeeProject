@@ -19,7 +19,7 @@ namespace Data.Entities
         public string Brand { get; set; }
         public decimal Price { get; set; }
         public string Image { get; set; }
-        public DateTime? Expiration { get; set; }
+        public DateTime Expiration { get; set; }
 
         public virtual Service Service { get; set; }
         public virtual ICollection<BookingDetail> BookingDetails { get; set; }
