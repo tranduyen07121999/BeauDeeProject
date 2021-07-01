@@ -9,7 +9,7 @@ namespace Data.Entities
     {
         public Product()
         {
-            UserProductServices = new HashSet<UserProductService>();
+            BookingDetails = new HashSet<BookingDetail>();
         }
 
         public Guid Id { get; set; }
@@ -19,9 +19,9 @@ namespace Data.Entities
         public string Brand { get; set; }
         public decimal Price { get; set; }
         public string Image { get; set; }
-        public DateTime Expiration { get; set; }
+        public DateTime? Expiration { get; set; }
 
         public virtual Service Service { get; set; }
-        public virtual ICollection<UserProductService> UserProductServices { get; set; }
+        public virtual ICollection<BookingDetail> BookingDetails { get; set; }
     }
 }

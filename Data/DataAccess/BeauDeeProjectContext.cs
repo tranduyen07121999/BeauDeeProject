@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 #nullable disable
 
 namespace Data.DataAccess
+
 {
     public partial class BeauDeeProjectContext : DbContext
     {
@@ -21,14 +22,16 @@ namespace Data.DataAccess
         public virtual DbSet<Booking> Bookings { get; set; }
         public virtual DbSet<BookingDetail> BookingDetails { get; set; }
         public virtual DbSet<Product> Products { get; set; }
+        public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Service> Services { get; set; }
         public virtual DbSet<Status> Statuses { get; set; }
         public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<UserProductService> UserProductServices { get; set; }
+        public virtual DbSet<UserRole> UserRoles { get; set; }
         public virtual DbSet<UserStatus> UserStatuses { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+           
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -37,37 +40,43 @@ namespace Data.DataAccess
 
             modelBuilder.Entity<Booking>(entity =>
             {
-                entity.ToTable("Booking");
-
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Bookings)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Booking__UserId__36B12243");
+                    .HasConstraintName("FK__Bookings__UserId__38996AB5");
             });
 
             modelBuilder.Entity<BookingDetail>(entity =>
             {
                 entity.HasKey(e => new { e.ServiceId, e.BookingId })
-                    .HasName("PK__BookingD__0222E1A41924CD7D");
+                    .HasName("PK__BookingD__0222E1A41C90D6A1");
 
                 entity.HasOne(d => d.Booking)
                     .WithMany(p => p.BookingDetails)
                     .HasForeignKey(d => d.BookingId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__BookingDe__Booki__3A81B327");
+                    .HasConstraintName("FK__BookingDe__Booki__3C69FB99");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.BookingDetails)
+                    .HasForeignKey(d => d.ProductId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__BookingDe__Produ__3E52440B");
 
                 entity.HasOne(d => d.Service)
                     .WithMany(p => p.BookingDetails)
                     .HasForeignKey(d => d.ServiceId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__BookingDe__Servi__398D8EEE");
+                    .HasConstraintName("FK__BookingDe__Servi__3B75D760");
 
-                entity.Property(e => e.UserId).HasColumnType("uniqueidentifier");
-
-                entity.Property(e => e.ProductId).HasColumnType("uniqueidentifier");
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.BookingDetails)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__BookingDe__UserI__3D5E1FD2");
             });
 
             modelBuilder.Entity<Product>(entity =>
@@ -100,6 +109,16 @@ namespace Data.DataAccess
                     .HasForeignKey(d => d.ServiceId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Products__Servic__300424B4");
+            });
+
+            modelBuilder.Entity<Role>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(256)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Service>(entity =>
@@ -138,10 +157,10 @@ namespace Data.DataAccess
 
             modelBuilder.Entity<User>(entity =>
             {
-                entity.HasIndex(e => e.Phone, "UQ__Users__5C7E359E57A67D58")
+                entity.HasIndex(e => e.Phone, "UQ__Users__5C7E359EF2E2C277")
                     .IsUnique();
 
-                entity.HasIndex(e => e.Email, "UQ__Users__A9D10534D0D324E2")
+                entity.HasIndex(e => e.Email, "UQ__Users__A9D10534D26964DE")
                     .IsUnique();
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
@@ -175,28 +194,30 @@ namespace Data.DataAccess
                     .IsUnicode(false);
             });
 
-            modelBuilder.Entity<UserProductService>(entity =>
+            modelBuilder.Entity<UserRole>(entity =>
             {
-                entity.HasKey(e => new { e.UserId, e.ProductId })
-                    .HasName("PK__UserProd__DCC80020C37EECB8");
+                entity.HasKey(e => new { e.UserId, e.RoleId })
+                    .HasName("PK__UserRole__AF2760ADBF5A3D90");
 
-                entity.HasOne(d => d.Product)
-                    .WithMany(p => p.UserProductServices)
-                    .HasForeignKey(d => d.ProductId)
+                entity.ToTable("UserRole");
+
+                entity.HasOne(d => d.Role)
+                    .WithMany(p => p.UserRoles)
+                    .HasForeignKey(d => d.RoleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UserProdu__Produ__33D4B598");
+                    .HasConstraintName("FK__UserRole__RoleId__35BCFE0A");
 
                 entity.HasOne(d => d.User)
-                    .WithMany(p => p.UserProductServices)
+                    .WithMany(p => p.UserRoles)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UserProdu__UserI__32E0915F");
+                    .HasConstraintName("FK__UserRole__UserId__34C8D9D1");
             });
 
             modelBuilder.Entity<UserStatus>(entity =>
             {
                 entity.HasKey(e => new { e.StatusId, e.UserId })
-                    .HasName("PK__UserStat__1996ACA7AEC22987");
+                    .HasName("PK__UserStat__1996ACA7D6B19EF6");
 
                 entity.ToTable("UserStatus");
 
