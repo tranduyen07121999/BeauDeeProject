@@ -17,6 +17,7 @@ namespace Data.ResponseModels
         public string Address { get; set; }
         public decimal MinValue { get; set; }
         public DateTime DayOfBirth { get; set; }
+        public string[] Role { get; set; }
         public string Image { get; set; }
     }
 }

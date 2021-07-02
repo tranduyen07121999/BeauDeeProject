@@ -77,6 +77,7 @@ namespace Application.Services
             var username = await _context.Users.Where(x => x.Username.Equals(model.Username)).CountAsync();
             var phone = await _context.Users.Where(x => x.Phone.Equals(model.Phone)).CountAsync();
             var email = await _context.Users.Where(x => x.Email.Equals(model.Email)).FirstOrDefaultAsync();
+            
             var message = "Blank";
             var status = 500;
             bool cemail = _emailHelper.EmailIsValid(model.Email);
@@ -101,6 +102,11 @@ namespace Application.Services
                 message = "Successfully";
                 status = 201;
                 var userId = Guid.NewGuid();
+                var userroles = new UserRole
+                {
+                    UserId = userId,
+                    RoleId = Guid.Parse("8239a139-d9d3-454f-8ea9-f3cd792d951b")
+                };
                 var ruser = new User
                 {
                     Id = userId,
@@ -114,11 +120,7 @@ namespace Application.Services
                     DayOfBirth = model.DayOfBirth,
                     Image = model.Image
                 };
-                var userroles = new UserRole
-                {
-                    UserId = userId,
-                    RoleId = Guid.Parse("8239a139-d9d3-454f-8ea9-f3cd792d951b")
-                };
+                
                 await _context.UserRoles.AddAsync(userroles);
                 await _context.Users.AddAsync(ruser);
                 await _context.SaveChangesAsync();
@@ -132,8 +134,10 @@ namespace Application.Services
                     Address = ruser.Address,
                     MinValue = ruser.MinValue,
                     DayOfBirth = ruser.DayOfBirth,
-                    Image = ruser.Image
-                });
+                    Image = ruser.Image,
+                    Role = _context.UserRoles.Where(x => x.RoleId.Equals(userroles.RoleId)).Select(x => x.Role.Name).ToArray(),
+                    
+            });
             }
             return new ResponseModel<UserResponse>(list)
             {
@@ -163,6 +167,7 @@ namespace Application.Services
         }
         public async Task<ResponseModel<UserResponse>> GetAll(PaginationRequest model)
         {
+            
             var users = await _context.Users.Select(u => new UserResponse
             {
                 Id = u.Id,
@@ -173,7 +178,8 @@ namespace Application.Services
                 DayOfBirth = u.DayOfBirth,
                 Address = u.Address,
                 Image = u.Image,
-                MinValue = u.MinValue
+                MinValue = u.MinValue,
+                Role = _context.UserRoles.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Role.Name).ToArray(),
             }).OrderBy(x => x.DayOfBirth).Skip((model.PageNumber - 1) * model.PageSize).Take(model.PageSize).ToListAsync();
             return new ResponseModel<UserResponse>(users)
             {
@@ -195,7 +201,8 @@ namespace Application.Services
                 DayOfBirth = u.DayOfBirth,
                 Address = u.Address,
                 Image = u.Image,
-                MinValue = u.MinValue
+                MinValue = u.MinValue,
+                Role = _context.UserRoles.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Role.Name).ToArray(),
             }).OrderBy(x => x.DayOfBirth).Skip((model.PageNumber - 1) * model.PageSize).Take(model.PageSize).ToListAsync();
             return new ResponseModel<UserResponse>(users)
             {
@@ -244,7 +251,8 @@ namespace Application.Services
                     DayOfBirth = user.DayOfBirth,
                     Address = user.Address,
                     MinValue = user.MinValue,
-                    Image = user.Image
+                    Image = user.Image,
+                    Role = _context.UserRoles.Where(x => x.UserId.Equals(user.Id)).Select(x => x.Role.Name).ToArray(),
                 });
             }
             return new ResponseModel<UserResponse>(list)
