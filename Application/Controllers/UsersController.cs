@@ -38,7 +38,7 @@ namespace Application.Controllers
             return await _userService.GetAll(model);
         }
         [HttpGet]
-        [Route("User/Search/{value}")]
+        [Route("Users/Search/{value}")]
         public async Task<ResponseModel<UserResponse>> SearchUser([FromQuery] PaginationRequest model, string value)
         {
             return await _userService.SearchUser(model, value);
@@ -46,7 +46,7 @@ namespace Application.Controllers
 
 
         [HttpPut]
-        [Route("User/Update")]
+        [Route("Users/Update")]
         public async Task<ResponseModel<UserResponse>> UpdateUser(Guid id, UserRequest model)
         {
             return await _userService.UpdateUser(id, model);
