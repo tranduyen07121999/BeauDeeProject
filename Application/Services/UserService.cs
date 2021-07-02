@@ -135,7 +135,7 @@ namespace Application.Services
                     MinValue = ruser.MinValue,
                     DayOfBirth = ruser.DayOfBirth,
                     Image = ruser.Image,
-                    Role = _context.UserRoles.Where(x => x.RoleId.Equals(userroles.RoleId)).Select(x => x.Role.Name).ToArray(),
+                    Role = await _context.UserRoles.Where(x => x.RoleId.Equals(userroles.RoleId)).Select(x => x.Role.Name).FirstOrDefaultAsync(),
                     
             });
             }
@@ -179,7 +179,7 @@ namespace Application.Services
                 Address = u.Address,
                 Image = u.Image,
                 MinValue = u.MinValue,
-                Role = _context.UserRoles.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Role.Name).ToArray(),
+                Role = _context.UserRoles.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Role.Name).FirstOrDefault(),
             }).OrderBy(x => x.DayOfBirth).Skip((model.PageNumber - 1) * model.PageSize).Take(model.PageSize).ToListAsync();
             return new ResponseModel<UserResponse>(users)
             {
@@ -202,7 +202,7 @@ namespace Application.Services
                 Address = u.Address,
                 Image = u.Image,
                 MinValue = u.MinValue,
-                Role = _context.UserRoles.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Role.Name).ToArray(),
+                Role = _context.UserRoles.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Role.Name).FirstOrDefault(),
             }).OrderBy(x => x.DayOfBirth).Skip((model.PageNumber - 1) * model.PageSize).Take(model.PageSize).ToListAsync();
             return new ResponseModel<UserResponse>(users)
             {
@@ -252,7 +252,7 @@ namespace Application.Services
                     Address = user.Address,
                     MinValue = user.MinValue,
                     Image = user.Image,
-                    Role = _context.UserRoles.Where(x => x.UserId.Equals(user.Id)).Select(x => x.Role.Name).ToArray(),
+                    Role = _context.UserRoles.Where(x => x.UserId.Equals(user.Id)).Select(x => x.Role.Name).FirstOrDefault(),
                 });
             }
             return new ResponseModel<UserResponse>(list)
