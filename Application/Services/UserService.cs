@@ -76,18 +76,24 @@ namespace Application.Services
         {
             var username = await _context.Users.Where(x => x.Username.Equals(model.Username)).CountAsync();
             var phone = await _context.Users.Where(x => x.Phone.Equals(model.Phone)).CountAsync();
-            var email = await _context.Users.Where(x => x.Email.Equals(model.Email)).CountAsync();
+            var email = await _context.Users.Where(x => x.Email.Equals(model.Email)).FirstOrDefaultAsync();
             var message = "Blank";
             var status = 500;
+            bool cemail = _emailHelper.EmailIsValid(model.Email);
             var list = new List<UserResponse>();
             if (username > 0 || phone > 0)
             {
                 message = "Username or phone number already exits";
                 status = 400;
             }
-            else if (email > 0)
+            else if (email != null)
             {
                 message = "Email already exits";
+                status = 400;
+            }
+            else if (cemail == false)
+            {
+                message = "Email is not validate";
                 status = 400;
             }
             else
@@ -201,37 +207,50 @@ namespace Application.Services
         {
 
             var list = new List<UserResponse>();
-            var user = await _context.Users.Where(x => x.Id.Equals(id)).Select(x => new User
+            var message = "Blank";
+            var status = 500;
+            bool cemail = _emailHelper.EmailIsValid(model.Email);
+            if (cemail == false)
             {
-                Id = id,
-                Username = x.Username,
-                Password = model.Password,
-                Name = model.Name,
-                Email = model.Email,
-                Phone = model.Phone,
-                DayOfBirth = model.DayOfBirth,
-                Address = model.Address,
-                MinValue = model.MinValue,
-                Image = model.Image
-            }).FirstOrDefaultAsync();
-            _context.Users.Update(user);
-            await _context.SaveChangesAsync();
-            list.Add(new UserResponse
+                message = "Email is not validate";
+                status = 400;
+            }
+            else
             {
-                Id = user.Id,
-                Name = user.Name,
-                Username = user.Username,
-                Email = user.Email,
-                Phone = user.Phone,
-                DayOfBirth = user.DayOfBirth,
-                Address = user.Address,
-                MinValue = user.MinValue,
-                Image = user.Image
-            });
-
+                message = "Successfully";
+                status = 201;
+                var user = await _context.Users.Where(x => x.Id.Equals(id)).Select(x => new User
+                {
+                    Id = id,
+                    Username = x.Username,
+                    Password = model.Password,
+                    Name = model.Name,
+                    Email = model.Email,
+                    Phone = model.Phone,
+                    DayOfBirth = model.DayOfBirth,
+                    Address = model.Address,
+                    MinValue = model.MinValue,
+                    Image = model.Image
+                }).FirstOrDefaultAsync();
+                _context.Users.Update(user);
+                await _context.SaveChangesAsync();
+                list.Add(new UserResponse
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Username = user.Username,
+                    Email = user.Email,
+                    Phone = user.Phone,
+                    DayOfBirth = user.DayOfBirth,
+                    Address = user.Address,
+                    MinValue = user.MinValue,
+                    Image = user.Image
+                });
+            }
             return new ResponseModel<UserResponse>(list)
             {
-                Status = 201,
+                Message = message,
+                Status = status,
                 Total = list.Count,
                 Type = "User"
             };
