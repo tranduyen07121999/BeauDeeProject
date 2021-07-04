@@ -33,7 +33,7 @@ namespace Application.Services
 
         public async Task<ResponseModel<AuthenticateResponse>> Authenticate(AuthenticateRequest model)
         {
-            var user = await _context.Users.Where(x => x.Username == model.Username && x.Password == model.Password)
+            var user = await _context.Users.Where(x => x.Uid == model.UId)
                 .Include(x => x.UserRoles).ThenInclude(x => x.Role).FirstOrDefaultAsync();
 
             var data = new List<AuthenticateResponse>();
@@ -42,7 +42,7 @@ namespace Application.Services
             {
                 return new ResponseModel<AuthenticateResponse>(data)
                 {
-                    Message = "Username or password is incorrect",
+                    Message = "Uid is incorrect",
                     Total = data.Count,
                     Type = "Authenticate"
                 };
@@ -56,7 +56,7 @@ namespace Application.Services
                     Email = user.Email,
                     Name = user.Name,
                     Role = user.UserRoles.Select(x => x.Role.Name).ToArray(),
-                    Username = user.Username,
+                    UId = user.Uid,
                     Token = token
                 });
                 return new ResponseModel<AuthenticateResponse>(data)
@@ -74,7 +74,6 @@ namespace Application.Services
 
         public async Task<ResponseModel<UserResponse>> RegistrationUser(UserRegisterRequest model)
         {
-            var username = await _context.Users.Where(x => x.Username.Equals(model.Username)).CountAsync();
             var phone = await _context.Users.Where(x => x.Phone.Equals(model.Phone)).CountAsync();
             var email = await _context.Users.Where(x => x.Email.Equals(model.Email)).FirstOrDefaultAsync();
             
@@ -82,9 +81,9 @@ namespace Application.Services
             var status = 500;
             bool cemail = _emailHelper.EmailIsValid(model.Email);
             var list = new List<UserResponse>();
-            if (username > 0 || phone > 0)
+            if (phone > 0)
             {
-                message = "Username or phone number already exits";
+                message = "Phone number already exits";
                 status = 400;
             }
             else if (email != null)
@@ -110,8 +109,7 @@ namespace Application.Services
                 var ruser = new User
                 {
                     Id = userId,
-                    Username = model.Username,
-                    Password = model.Password,
+                    Uid = model.UId,
                     Name = model.Name,
                     Email = model.Email,
                     Phone = model.Phone,
@@ -127,7 +125,7 @@ namespace Application.Services
                 list.Add(new UserResponse
                 {
                     Id = ruser.Id,
-                    Username = ruser.Username,
+                    UId = ruser.Uid,
                     Name = ruser.Name,
                     Email = ruser.Email,
                     Phone = ruser.Phone,
@@ -172,7 +170,7 @@ namespace Application.Services
             {
                 Id = u.Id,
                 Name = u.Name,
-                Username = u.Username,
+                UId = u.Uid,
                 Email = u.Email,
                 Phone = u.Phone,
                 DayOfBirth = u.DayOfBirth,
@@ -190,12 +188,12 @@ namespace Application.Services
 
         public async Task<ResponseModel<UserResponse>> SearchUser(PaginationRequest model, string value)
         {
-            var users = await _context.Users.Where(u => u.Name.Contains(value) || u.Username.Contains(value) || u.Email.Contains(value)
+            var users = await _context.Users.Where(u => u.Name.Contains(value) || u.Email.Contains(value)
             || u.Phone.Contains(value) || u.Address.Contains(value)).Select(u => new UserResponse
             {
                 Id = u.Id,
                 Name = u.Name,
-                Username = u.Username,
+                UId = u.Uid,
                 Email = u.Email,
                 Phone = u.Phone,
                 DayOfBirth = u.DayOfBirth,
@@ -229,10 +227,9 @@ namespace Application.Services
                 var user = await _context.Users.Where(x => x.Id.Equals(id)).Select(x => new User
                 {
                     Id = id,
-                    Username = x.Username,
-                    Password = model.Password,
                     Name = model.Name,
                     Email = model.Email,
+                    Uid = x.Uid,
                     Phone = model.Phone,
                     DayOfBirth = model.DayOfBirth,
                     Address = model.Address,
@@ -245,7 +242,7 @@ namespace Application.Services
                 {
                     Id = user.Id,
                     Name = user.Name,
-                    Username = user.Username,
+                    UId = user.Uid,
                     Email = user.Email,
                     Phone = user.Phone,
                     DayOfBirth = user.DayOfBirth,
