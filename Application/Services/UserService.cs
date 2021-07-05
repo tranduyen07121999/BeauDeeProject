@@ -35,19 +35,19 @@ namespace Application.Services
             _appSetting = appSetting.Value;
             _emailHelper = emailHepler.Value;
         }
-        //private void initFireBase()
-        //{
-        //    //check if firebase is null
-        //    if (FirebaseApp.DefaultInstance == null)
-        //    {
-        //        string path = ConfigurationHelper.Configuration["Firebase"];
-        //        FirebaseApp.Create(new AppOptions()
-        //        {
-        //            Credential = GoogleCredential.FromFile(path),
-        //            ServiceAccountId = "firebase-adminsdk-pff09@beaudee-84ddb.iam.gserviceaccount.com"
-        //        });
-        //    }//end if
-        //}
+        private void initFireBase()
+        {
+            //check if firebase is null
+            if (FirebaseApp.DefaultInstance == null)
+            {
+                string path = ConfigurationHelper.Configuration["Firebase:GoogleCredentialPath"];
+                FirebaseApp.Create(new AppOptions()
+                {
+                    Credential = GoogleCredential.FromFile(path),
+                    ServiceAccountId = "firebase-adminsdk-pff09@beaudee-84ddb.iam.gserviceaccount.com"
+                });
+            }//end if
+        }
 
         private async Task<AuthenticateUserResponse> VerifiedFireBaseToken(string firebaseToken)
         {

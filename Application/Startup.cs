@@ -84,7 +84,7 @@ namespace Application
             services.Configure<AppSetting>(Configuration.GetSection("AppSettings"));
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ISvService, SvService>();
-            services.AddScoped<IUserService, UserService>();
+            services.AddTransient<IUserService, UserService>();
             services.AddScoped<IBookingDetailService, BookingDetailService>();
             services.AddControllers();
             services.AddCors();
