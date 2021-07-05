@@ -6,13 +6,10 @@ using System.Threading.Tasks;
 
 namespace Data.ResponseModels
 {
-    public class AuthenticateResponse
+    public class AuthenticateUserResponse
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
         public string Uid { get; set; }
+        public string Name { get; set; }
         public string Email { get; set; }
-        public string[] Role { get; set; }
-        public string Token { get; set; }
     }
 }

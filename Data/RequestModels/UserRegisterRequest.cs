@@ -6,7 +6,7 @@ namespace Data.RequestModels
 {
     public class UserRegisterRequest
     {
-        public string UId { get; set; }
+        public string Uid { get; set; }
 
         public string Name { get; set; }
         public string Email { get; set; }

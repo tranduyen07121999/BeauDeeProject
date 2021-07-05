@@ -8,6 +8,6 @@ namespace Data.RequestModels
 {
     public class AuthenticateRequest
     {
-        public string UId { get; set; }
+        public string Token { get; set; }
     }
 }
