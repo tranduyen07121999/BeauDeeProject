@@ -11,11 +11,13 @@ namespace Application.Interfaces
         Task<ResponseModel<AuthenticateResponse>> Authenticate(AuthenticateRequest model);
         User GetById(Guid id);
 
-        //Task<ResponseModel<UserResponse>> RegistrationUser(UserRegisterRequest model);
 
         Task<ResponseModel<UserResponse>> SearchUser(PaginationRequest model, string value);
         Task<ResponseModel<UserResponse>> UpdateUser(Guid id, UserRequest model);
         Task<ResponseModel<UserResponse>> GetAll(PaginationRequest model);
+
+        Task<ResponseModel<UserResponse>> GetUserByEmail(string email);
+
 
 
 

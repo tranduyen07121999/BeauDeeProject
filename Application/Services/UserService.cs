@@ -35,7 +35,7 @@ namespace Application.Services
             _appSetting = appSetting.Value;
             _emailHelper = emailHepler.Value;
         }
-       
+
 
         private async Task<AuthenticateUserResponse> VerifiedFireBaseToken(string firebaseToken)
         {
@@ -100,7 +100,7 @@ namespace Application.Services
                     await _context.UserRoles.AddAsync(userroles);
                     await _context.Users.AddAsync(ruser);
                     await _context.SaveChangesAsync();
-                    
+
 
                 }
                 var cuser = await _context.Users.Where(x => x.Uid == auser.Uid).Include(x => x.UserRoles).ThenInclude(x => x.Role).FirstOrDefaultAsync();
@@ -129,78 +129,7 @@ namespace Application.Services
             return _context.Users.Where(x => x.Id.Equals(id)).Include(x => x.UserRoles).ThenInclude(x => x.Role).FirstOrDefault();
         }
 
-        //public async Task<ResponseModel<UserResponse>> RegistrationUser(UserRegisterRequest model)
-        //{
-        //    var message = "Blank";
-        //    var status = 500;
-        //    var phone = await _context.Users.Where(x => x.Phone.Equals(model.Phone)).CountAsync();
-        //    var email = await _context.Users.Where(x => x.Email.Equals(model.Email)).FirstOrDefaultAsync();
-        //    bool cemail = _emailHelper.EmailIsValid(model.Email);
-        //    var list = new List<UserResponse>();
-        //    if (phone > 0)
-        //    {
-        //        message = "Phone number already exits";
-        //        status = 400;
-        //    }
-        //    else if (email != null)
-        //    {
-        //        message = "Email already exits";
-        //        status = 400;
-        //    }
-        //    else if (cemail == false)
-        //    {
-        //        message = "Email is not validate";
-        //        status = 400;
-        //    }
-        //    else
-        //    {
-        //        message = "Successfully";
-        //        status = 201;
-        //        var userId = Guid.NewGuid();
-        //        var userroles = new UserRole
-        //        {
-        //            UserId = userId,
-        //            RoleId = Guid.Parse("8239a139-d9d3-454f-8ea9-f3cd792d951b")
-        //        };
-        //        var ruser = new User
-        //        {
-        //            Id = userId,
-        //            Uid = model.Uid,
-        //            Name = model.Name,
-        //            Email = model.Email,
-        //            Phone = model.Phone,
-        //            Address = model.Address,
-        //            MinValue = 0,
-        //            DayOfBirth = model.DayOfBirth,
-        //            Image = model.Image
-        //        };
 
-        //        await _context.UserRoles.AddAsync(userroles);
-        //        await _context.Users.AddAsync(ruser);
-        //        await _context.SaveChangesAsync();
-        //        list.Add(new UserResponse
-        //        {
-        //            Id = ruser.Id,
-        //            Uid = ruser.Uid,
-        //            Name = ruser.Name,
-        //            Email = ruser.Email,
-        //            Phone = ruser.Phone,
-        //            Address = ruser.Address,
-        //            MinValue = ruser.MinValue,
-        //            DayOfBirth = ruser.DayOfBirth,
-        //            Image = ruser.Image,
-        //            Role = await _context.UserRoles.Where(x => x.RoleId.Equals(userroles.RoleId)).Select(x => x.Role.Name).FirstOrDefaultAsync(),
-
-        //        });
-        //    }
-        //    return new ResponseModel<UserResponse>(list)
-        //    {
-        //        Message = message,
-        //        Status = status,
-        //        Total = list.Count,
-        //        Type = "User"
-        //    };
-        //}
 
         private string generateJwtToken(User user)
         {
@@ -318,7 +247,26 @@ namespace Application.Services
 
         }
 
-
-
+        public async Task<ResponseModel<UserResponse>> GetUserByEmail(string email)
+        {
+            var user = await _context.Users.Where(u => u.Email.Equals(email)).Select(u => new UserResponse
+            {
+                Id = u.Id,
+                Name = u.Name,
+                Uid = u.Uid,
+                Email = u.Email,
+                Phone = u.Phone,
+                DayOfBirth = u.DayOfBirth,
+                Address = u.Address,
+                Image = u.Image,
+                MinValue = u.MinValue,
+                Role = _context.UserRoles.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Role.Name).FirstOrDefault(),
+            }).ToListAsync();
+            return new ResponseModel<UserResponse>(user)
+            {
+                Total = user.Count,
+                Type = "User"
+            };
+        }
     }
 }

@@ -30,12 +30,7 @@ namespace Application.Controllers
         {
             return await _userService.Authenticate(model);
         }
-        //[HttpPost]
-        //[Route("Users/Register")]
-        //public async Task<ResponseModel<UserResponse>> RegistrationUser(UserRegisterRequest model)
-        //{
-        //    return await _userService.RegistrationUser(model);
-        //}
+
         [HttpGet]
         [Route("Users/GetAll")]
         public async Task<ResponseModel<UserResponse>> GetAllUser([FromQuery] PaginationRequest model)
@@ -48,7 +43,12 @@ namespace Application.Controllers
         {
             return await _userService.SearchUser(model, value);
         }
-
+        [HttpGet]
+        [Route("Users/Get/{email}")]
+        public async Task<ResponseModel<UserResponse>> GetUserByEmail(String email)
+        {
+            return await _userService.GetUserByEmail(email);
+        }
 
         [HttpPut]
         [Route("Users/Update")]
