@@ -95,7 +95,7 @@ namespace Application.Services
                         MinValue = null,
                         DayOfBirth = null,
                         Image = null,
-                        Password = "admin@1234"
+                        Password = "a4955988-5a4f-46a6-bf8d-8673aba672ce"
 
                     };
 
