@@ -30,6 +30,12 @@ namespace Application.Controllers
         {
             return await _userService.Authenticate(model);
         }
+        [HttpPost]
+        [Route("Users/Admin/Authenticate")]
+        public async Task<ResponseModel<AuthenticateResponse>> AdminAuthenticate(AdminAuthenticateRequest model)
+        {
+            return await _userService.AdminAuthenticate(model);
+        }
 
         [HttpGet]
         [Route("Users/GetAll")]

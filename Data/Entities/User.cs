@@ -25,6 +25,9 @@ namespace Data.Entities
         public decimal? MinValue { get; set; }
         public DateTime? DayOfBirth { get; set; }
         public string Image { get; set; }
+        public string Password { get; set; }
+
+
 
         public virtual ICollection<BookingDetail> BookingDetails { get; set; }
         public virtual ICollection<Booking> Bookings { get; set; }

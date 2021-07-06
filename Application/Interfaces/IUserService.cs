@@ -9,6 +9,8 @@ namespace Application.Interfaces
     public interface IUserService
     {
         Task<ResponseModel<AuthenticateResponse>> Authenticate(AuthenticateRequest model);
+        Task<ResponseModel<AuthenticateResponse>> AdminAuthenticate(AdminAuthenticateRequest model);
+
         User GetById(Guid id);
 
 

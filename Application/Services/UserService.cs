@@ -94,7 +94,9 @@ namespace Application.Services
                         Address = null,
                         MinValue = null,
                         DayOfBirth = null,
-                        Image = null
+                        Image = null,
+                        Password = "admin@1234"
+
                     };
 
                     await _context.UserRoles.AddAsync(userroles);
@@ -124,149 +126,191 @@ namespace Application.Services
             };
 
         }
-        public User GetById(Guid id)
+
+        public async Task<ResponseModel<AuthenticateResponse>> AdminAuthenticate(AdminAuthenticateRequest model)
         {
-            return _context.Users.Where(x => x.Id.Equals(id)).Include(x => x.UserRoles).ThenInclude(x => x.Role).FirstOrDefault();
-        }
+            var user = await _context.Users.Where(x => x.Email == model.Email && x.Password == model.Password)
+                .Include(x => x.UserRoles).ThenInclude(x => x.Role).FirstOrDefaultAsync();
+            var data = new List<AuthenticateResponse>();
 
-
-
-        private string generateJwtToken(User user)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSetting.Secret);
-            var id = user.Id.ToString();
-            var roles = String.Join(",", user.UserRoles.Select(x => x.Role.Name));
-
-            var tokenDescriptor = new SecurityTokenDescriptor
+            if (user == null)
             {
-                Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()), new Claim("roles", String.Join(",", user.UserRoles.Select(x => x.Role.Name))) }),
-                Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var t = tokenHandler.WriteToken(token);
-            return tokenHandler.WriteToken(token);
-        }
-        public async Task<ResponseModel<UserResponse>> GetAll(PaginationRequest model)
-        {
-
-            var users = await _context.Users.Select(u => new UserResponse
-            {
-                Id = u.Id,
-                Name = u.Name,
-                Uid = u.Uid,
-                Email = u.Email,
-                Phone = u.Phone,
-                DayOfBirth = u.DayOfBirth,
-                Address = u.Address,
-                Image = u.Image,
-                MinValue = u.MinValue,
-                Role = _context.UserRoles.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Role.Name).FirstOrDefault(),
-            }).OrderBy(x => x.DayOfBirth).Skip((model.PageNumber - 1) * model.PageSize).Take(model.PageSize).ToListAsync();
-            return new ResponseModel<UserResponse>(users)
-            {
-                Total = users.Count,
-                Type = "Users"
-            };
-        }
-
-        public async Task<ResponseModel<UserResponse>> SearchUser(PaginationRequest model, string value)
-        {
-            var users = await _context.Users.Where(u => u.Name.Contains(value) || u.Email.Contains(value)
-            || u.Phone.Contains(value) || u.Address.Contains(value)).Select(u => new UserResponse
-            {
-                Id = u.Id,
-                Name = u.Name,
-                Uid = u.Uid,
-                Email = u.Email,
-                Phone = u.Phone,
-                DayOfBirth = u.DayOfBirth,
-                Address = u.Address,
-                Image = u.Image,
-                MinValue = u.MinValue,
-                Role = _context.UserRoles.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Role.Name).FirstOrDefault(),
-            }).OrderBy(x => x.DayOfBirth).Skip((model.PageNumber - 1) * model.PageSize).Take(model.PageSize).ToListAsync();
-            return new ResponseModel<UserResponse>(users)
-            {
-                Total = users.Count,
-                Type = "Users"
-            };
-        }
-        public async Task<ResponseModel<UserResponse>> UpdateUser(Guid id, UserRequest model)
-        {
-
-            var list = new List<UserResponse>();
-            var message = "Blank";
-            var status = 500;
-            bool cemail = _emailHelper.EmailIsValid(model.Email);
-            if (cemail == false)
-            {
-                message = "Email is not validate";
-                status = 400;
+                return new ResponseModel<AuthenticateResponse>(data)
+                {
+                    Message = "Email or password is incorrect",
+                    Total = data.Count,
+                    Type = "AdminAuthenticate"
+                };
             }
             else
             {
-                message = "Successfully";
-                status = 201;
-                var user = await _context.Users.Where(x => x.Id.Equals(id)).Select(x => new User
-                {
-                    Id = id,
-                    Name = model.Name,
-                    Email = model.Email,
-                    Uid = x.Uid,
-                    Phone = model.Phone,
-                    DayOfBirth = model.DayOfBirth,
-                    Address = model.Address,
-                    MinValue = model.MinValue,
-                    Image = model.Image
-                }).FirstOrDefaultAsync();
-                _context.Users.Update(user);
-                await _context.SaveChangesAsync();
-                list.Add(new UserResponse
+                var token = generateJwtToken(user);
+                data.Add(new AuthenticateResponse
                 {
                     Id = user.Id,
-                    Name = user.Name,
-                    Uid = user.Uid,
                     Email = user.Email,
-                    Phone = user.Phone,
-                    DayOfBirth = user.DayOfBirth,
-                    Address = user.Address,
-                    MinValue = user.MinValue,
-                    Image = user.Image,
-                    Role = _context.UserRoles.Where(x => x.UserId.Equals(user.Id)).Select(x => x.Role.Name).FirstOrDefault(),
+                    Name = user.Name,
+                    Role = user.UserRoles.Select(x => x.Role.Name).ToArray(),
+                    Uid = user.Uid,
+                    Token = token
                 });
             }
-            return new ResponseModel<UserResponse>(list)
+            return new ResponseModel<AuthenticateResponse>(data)
             {
-                Message = message,
-                Status = status,
-                Total = list.Count,
-                Type = "User"
+                Message = "Successful authenticate",
+                Total = data.Count,
+                Type = "AdminAuthenticate"
             };
-
         }
+           
 
-        public async Task<ResponseModel<UserResponse>> GetUserByEmail(string email)
+
+
+
+
+public User GetById(Guid id)
+{
+    return _context.Users.Where(x => x.Id.Equals(id)).Include(x => x.UserRoles).ThenInclude(x => x.Role).FirstOrDefault();
+}
+
+
+
+private string generateJwtToken(User user)
+{
+    var tokenHandler = new JwtSecurityTokenHandler();
+    var key = Encoding.ASCII.GetBytes(_appSetting.Secret);
+    var id = user.Id.ToString();
+    var roles = String.Join(",", user.UserRoles.Select(x => x.Role.Name));
+
+    var tokenDescriptor = new SecurityTokenDescriptor
+    {
+        Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()), new Claim("roles", String.Join(",", user.UserRoles.Select(x => x.Role.Name))) }),
+        Expires = DateTime.UtcNow.AddDays(7),
+        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+    };
+    var token = tokenHandler.CreateToken(tokenDescriptor);
+    var t = tokenHandler.WriteToken(token);
+    return tokenHandler.WriteToken(token);
+}
+public async Task<ResponseModel<UserResponse>> GetAll(PaginationRequest model)
+{
+
+    var users = await _context.Users.Select(u => new UserResponse
+    {
+        Id = u.Id,
+        Name = u.Name,
+        Uid = u.Uid,
+        Email = u.Email,
+        Phone = u.Phone,
+        DayOfBirth = u.DayOfBirth,
+        Address = u.Address,
+        Image = u.Image,
+        MinValue = u.MinValue,
+        Role = _context.UserRoles.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Role.Name).FirstOrDefault(),
+    }).OrderBy(x => x.DayOfBirth).Skip((model.PageNumber - 1) * model.PageSize).Take(model.PageSize).ToListAsync();
+    return new ResponseModel<UserResponse>(users)
+    {
+        Total = users.Count,
+        Type = "Users"
+    };
+}
+
+public async Task<ResponseModel<UserResponse>> SearchUser(PaginationRequest model, string value)
+{
+    var users = await _context.Users.Where(u => u.Name.Contains(value) || u.Email.Contains(value)
+    || u.Phone.Contains(value) || u.Address.Contains(value)).Select(u => new UserResponse
+    {
+        Id = u.Id,
+        Name = u.Name,
+        Uid = u.Uid,
+        Email = u.Email,
+        Phone = u.Phone,
+        DayOfBirth = u.DayOfBirth,
+        Address = u.Address,
+        Image = u.Image,
+        MinValue = u.MinValue,
+        Role = _context.UserRoles.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Role.Name).FirstOrDefault(),
+    }).OrderBy(x => x.DayOfBirth).Skip((model.PageNumber - 1) * model.PageSize).Take(model.PageSize).ToListAsync();
+    return new ResponseModel<UserResponse>(users)
+    {
+        Total = users.Count,
+        Type = "Users"
+    };
+}
+public async Task<ResponseModel<UserResponse>> UpdateUser(Guid id, UserRequest model)
+{
+
+    var list = new List<UserResponse>();
+    var message = "Blank";
+    var status = 500;
+    bool cemail = _emailHelper.EmailIsValid(model.Email);
+    if (cemail == false)
+    {
+        message = "Email is not validate";
+        status = 400;
+    }
+    else
+    {
+        message = "Successfully";
+        status = 201;
+        var user = await _context.Users.Where(x => x.Id.Equals(id)).Select(x => new User
         {
-            var user = await _context.Users.Where(u => u.Email.Equals(email)).Select(u => new UserResponse
-            {
-                Id = u.Id,
-                Name = u.Name,
-                Uid = u.Uid,
-                Email = u.Email,
-                Phone = u.Phone,
-                DayOfBirth = u.DayOfBirth,
-                Address = u.Address,
-                Image = u.Image,
-                MinValue = u.MinValue,
-                Role = _context.UserRoles.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Role.Name).FirstOrDefault(),
-            }).ToListAsync();
-            return new ResponseModel<UserResponse>(user)
-            {
-                Total = user.Count,
-                Type = "User"
-            };
-        }
+            Id = id,
+            Name = model.Name,
+            Email = model.Email,
+            Uid = x.Uid,
+            Phone = model.Phone,
+            DayOfBirth = model.DayOfBirth,
+            Address = model.Address,
+            MinValue = model.MinValue,
+            Image = model.Image
+        }).FirstOrDefaultAsync();
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+        list.Add(new UserResponse
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Uid = user.Uid,
+            Email = user.Email,
+            Phone = user.Phone,
+            DayOfBirth = user.DayOfBirth,
+            Address = user.Address,
+            MinValue = user.MinValue,
+            Image = user.Image,
+            Role = _context.UserRoles.Where(x => x.UserId.Equals(user.Id)).Select(x => x.Role.Name).FirstOrDefault(),
+        });
+    }
+    return new ResponseModel<UserResponse>(list)
+    {
+        Message = message,
+        Status = status,
+        Total = list.Count,
+        Type = "User"
+    };
+
+}
+
+public async Task<ResponseModel<UserResponse>> GetUserByEmail(string email)
+{
+    var user = await _context.Users.Where(u => u.Email.Equals(email)).Select(u => new UserResponse
+    {
+        Id = u.Id,
+        Name = u.Name,
+        Uid = u.Uid,
+        Email = u.Email,
+        Phone = u.Phone,
+        DayOfBirth = u.DayOfBirth,
+        Address = u.Address,
+        Image = u.Image,
+        MinValue = u.MinValue,
+        Role = _context.UserRoles.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Role.Name).FirstOrDefault(),
+    }).ToListAsync();
+    return new ResponseModel<UserResponse>(user)
+    {
+        Total = user.Count,
+        Type = "User"
+    };
+}
     }
 }

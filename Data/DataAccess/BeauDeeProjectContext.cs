@@ -172,6 +172,10 @@ namespace Data.DataAccess
                 entity.Property(e => e.Image)
                     .HasMaxLength(256)
                     .IsUnicode(false);
+                entity.Property(e => e.Password)
+                    .IsRequired()
+                    .HasMaxLength(256)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.MinValue).HasColumnType("decimal(18, 0)");
 
