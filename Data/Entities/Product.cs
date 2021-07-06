@@ -10,6 +10,7 @@ namespace Data.Entities
         public Product()
         {
             BookingDetails = new HashSet<BookingDetail>();
+            UserProductServices = new HashSet<UserProductService>();
         }
 
         public Guid Id { get; set; }
@@ -23,5 +24,6 @@ namespace Data.Entities
 
         public virtual Service Service { get; set; }
         public virtual ICollection<BookingDetail> BookingDetails { get; set; }
+        public virtual ICollection<UserProductService> UserProductServices { get; set; }
     }
 }

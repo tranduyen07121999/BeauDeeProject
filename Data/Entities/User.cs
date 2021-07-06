@@ -11,6 +11,7 @@ namespace Data.Entities
         {
             BookingDetails = new HashSet<BookingDetail>();
             Bookings = new HashSet<Booking>();
+            UserProductServices = new HashSet<UserProductService>();
             UserRoles = new HashSet<UserRole>();
             UserStatuses = new HashSet<UserStatus>();
         }
@@ -27,6 +28,7 @@ namespace Data.Entities
 
         public virtual ICollection<BookingDetail> BookingDetails { get; set; }
         public virtual ICollection<Booking> Bookings { get; set; }
+        public virtual ICollection<UserProductService> UserProductServices { get; set; }
         public virtual ICollection<UserRole> UserRoles { get; set; }
         public virtual ICollection<UserStatus> UserStatuses { get; set; }
     }
