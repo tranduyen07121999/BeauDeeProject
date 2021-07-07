@@ -57,7 +57,7 @@ namespace Application
                 {
                     Description = @"JWT Authorization header using the Bearer scheme.
 
-                    Example: 'Bearer 12345abcdef'",
+                    Example: 'eyJhbGciOiJIUzI1NiIsInR.NzIxYzY0NCIsInJvbGVzIjoiQWRtaW4iLCJuYmYiOjE2MjU2NjgwMTcsImV4cCI6MTYyNjI3MjgxNywiaWF0IjoxNjI1NjY4MDE3fQ.roV14lAE9U28WvFTSrWiXOsXBnjufBppl-l5D8_iw1U'",
                     Name = "Authorization",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey,
