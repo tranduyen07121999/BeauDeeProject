@@ -23,7 +23,7 @@ namespace Application.Services
             var products = await _context.Products.Select(p => new ProductResponse
             {
                 Id = p.Id,
-                ServiceId = p.ServiceId,
+                Service = _context.Services.Where(x => x.Id.Equals(p.ServiceId)).Select(x => x.Name).FirstOrDefault(),
                 Name = p.Name,
                 Brand = p.Brand,
                 Price = p.Price,
@@ -43,7 +43,7 @@ namespace Application.Services
             var products = await _context.Products.Where(p => p.Name.Contains(value) || p.Brand.Contains(value) || p.Service.Name.Contains(value)).Select(p => new ProductResponse
             {
                 Id = p.Id,
-                ServiceId = p.ServiceId,
+                Service = _context.Services.Where(x => x.Id.Equals(p.ServiceId)).Select(x => x.Name).FirstOrDefault(),
                 Name = p.Name,
                 Brand = p.Brand,
                 Price = p.Price,
@@ -63,7 +63,7 @@ namespace Application.Services
             var products = await _context.Products.Where(p => p.Price >= min && p.Price <= max).Select(p => new ProductResponse
             {
                 Id = p.Id,
-                ServiceId = p.ServiceId,
+                Service = _context.Services.Where(x => x.Id.Equals(p.ServiceId)).Select(x => x.Name).FirstOrDefault(),
                 Name = p.Name,
                 Brand = p.Brand,
                 Price = p.Price,
@@ -83,7 +83,7 @@ namespace Application.Services
             var product = new Product
             {
                 Id = Guid.NewGuid(),
-                ServiceId = await _context.Services.Where(x => x.Name.Equals(model.ServiceName)).Select(x => x.Id).FirstOrDefaultAsync(),
+                ServiceId = await _context.Services.Where(x => x.Name.Equals(model.Service)).Select(x => x.Id).FirstOrDefaultAsync(),
                 Name = model.Name,
                 Brand = model.Brand,
                 Price = model.Price,
@@ -97,7 +97,7 @@ namespace Application.Services
             list.Add(new ProductResponse
             {
                 Id = product.Id,
-                ServiceId = product.ServiceId,
+                Service = _context.Services.Where(x => x.Id.Equals(product.ServiceId)).Select(x => x.Name).FirstOrDefault(),
                 Name = product.Name,
                 Brand = product.Brand,
                 Price = product.Price,
@@ -120,7 +120,7 @@ namespace Application.Services
                 Name = model.Name,
                 Brand = model.Brand,
                 Price = model.Price,
-                ServiceId = _context.Services.Where(x => x.Name.Equals(model.ServiceName)).Select(x => x.Id).FirstOrDefault(),
+                ServiceId = _context.Services.Where(x => x.Name.Equals(model.Service)).Select(x => x.Id).FirstOrDefault(),
                 Image = model.Image,
                 Status = model.Status,
                 Expiration = model.Expiration
@@ -131,7 +131,7 @@ namespace Application.Services
             list.Add(new ProductResponse
             {
                 Id = product.Id,
-                ServiceId = product.ServiceId,
+                Service = _context.Services.Where(x => x.Id.Equals(product.ServiceId)).Select(x => x.Name).FirstOrDefault(),
                 Name = product.Name,
                 Brand = product.Brand,
                 Price = product.Price,

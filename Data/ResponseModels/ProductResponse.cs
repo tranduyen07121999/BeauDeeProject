@@ -8,7 +8,7 @@ namespace Data.ResponseModels
     public class ProductResponse
     {
         public Guid Id { get; set; }
-        public Guid ServiceId { get; set; }
+        public string Service { get; set; }
         public string Name { get; set; }
         public string Brand { get; set; }
         public decimal Price { get; set; }

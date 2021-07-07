@@ -7,7 +7,7 @@ namespace Data.RequestModels
 {
     public class ProductRequest
     {
-        public string ServiceName { get; set; }
+        public string Service { get; set; }
         public string Name { get; set; }
         public string Brand { get; set; }
         public decimal Price { get; set; }
