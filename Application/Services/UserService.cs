@@ -263,7 +263,8 @@ public async Task<ResponseModel<UserResponse>> UpdateUser(Guid id, UserRequest m
             DayOfBirth = model.DayOfBirth,
             Address = model.Address,
             MinValue = model.MinValue,
-            Image = model.Image
+            Image = model.Image,
+            Password = x.Password
         }).FirstOrDefaultAsync();
         _context.Users.Update(user);
         await _context.SaveChangesAsync();

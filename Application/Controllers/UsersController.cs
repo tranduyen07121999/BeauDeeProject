@@ -45,13 +45,13 @@ namespace Application.Controllers
         }
         [HttpGet]
         [Route("Users/Search/{value}")]
-        public async Task<ResponseModel<UserResponse>> SearchUser([FromQuery] PaginationRequest model, string value)
+        public async Task<ResponseModel<UserResponse>> SearchUser([FromQuery] PaginationRequest model, [FromRoute] string value)
         {
             return await _userService.SearchUser(model, value);
         }
         [HttpGet]
         [Route("Users/Get/{email}")]
-        public async Task<ResponseModel<UserResponse>> GetUserByEmail(String email)
+        public async Task<ResponseModel<UserResponse>> GetUserByEmail([FromRoute] String email)
         {
             return await _userService.GetUserByEmail(email);
         }
