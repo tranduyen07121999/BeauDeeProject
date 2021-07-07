@@ -7,6 +7,7 @@ using FirebaseAdmin.Auth;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -104,10 +105,14 @@ namespace Application
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Application v1"));
+               
             }
             var googleCredential = Configuration.GetSection("FireBase").Get<GoogleCredentialModel>();
+            app.UseSwagger();
+            app.UseMiddleware<JwtMiddleware>();
+
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Application v1"));
+            
             FirebaseApp.Create(new AppOptions
             {
                 Credential = GoogleCredential.FromJson(
@@ -124,7 +129,6 @@ namespace Application
 
             app.UseRouting();
 
-            app.UseMiddleware<JwtMiddleware>();
 
             app.UseAuthorization();
 
