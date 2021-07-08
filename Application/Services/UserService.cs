@@ -347,6 +347,8 @@ namespace Application.Services
                 MinValue = user.MinValue,
                 Image = user.Image,
                 Role = _context.UserRoles.Where(x => x.UserId.Equals(user.Id)).Select(x => x.Role.Name).FirstOrDefault(),
+                Service = _context.UserProductServices.Where(x => x.UserId.Equals(user.Id)).Select(x => x.Service.Name).ToArray(),
+                Product = _context.UserProductServices.Where(x => x.UserId.Equals(user.Id)).Select(x => x.Product.Name).ToArray(),
             });
             return new ResponseModel<UserRoleResponse>(list)
             {
