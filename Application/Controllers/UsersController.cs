@@ -64,7 +64,13 @@ namespace Application.Controllers
         {
             return await _userService.UpdateUser(id, model);
         }
-
+        //[Authorize("Admin")]
+        [HttpPut]
+        [Route("Users/Update/Artist")]
+        public async Task<ResponseModel<UserRoleResponse>> UpdateRoleArtist(Guid id, UserRoleRequest model)
+        {
+            return await _userService.UpdateRoleArtist(id, model);
+        }
         [HttpGet("test")]
 
         public async Task<IActionResult> GetTokenAsync()

@@ -17,7 +17,7 @@ namespace Application.Interfaces
         Task<ResponseModel<UserResponse>> SearchUser(PaginationRequest model, string value);
         Task<ResponseModel<UserResponse>> UpdateUser(Guid id, UserRequest model);
         Task<ResponseModel<UserResponse>> GetAll(PaginationRequest model);
-
+        Task<ResponseModel<UserRoleResponse>> UpdateRoleArtist(Guid id, UserRoleRequest model);
         Task<ResponseModel<UserResponse>> GetUserByEmail(string email);
 
 
