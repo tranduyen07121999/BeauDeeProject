@@ -16,31 +16,35 @@ namespace JwtAuthentication.Controllers
         {
             _service = service;
         }
-
+        [Authorize("Admin")]
         [HttpGet]
         [Route("Products/GetAll")]
         public async Task<ResponseModel<ProductResponse>> GetAllProduct([FromQuery] PaginationRequest model)
         {
             return await _service.GetAll(model);
         }
+        [Authorize("Admin")]
         [HttpGet]
         [Route("Products/Search/{value}")]
         public async Task<ResponseModel<ProductResponse>> SearchProduct([FromQuery] PaginationRequest model, string value)
         {
             return await _service.SearchProduct(model, value);
         }
+        [Authorize("Admin")]
         [HttpGet]
         [Route("Products/Search/{min}/{max}")]
         public async Task<ResponseModel<ProductResponse>> SearchProductByPrice([FromQuery] PaginationRequest model, decimal min, decimal max)
         {
             return await _service.SearchProductByPrice(model, min, max);
         }
+        [Authorize("Admin")]
         [HttpPost]
         [Route("Products/Create")]
         public async Task<ResponseModel<ProductResponse>> CreateProduct(ProductRequest model)
         {
             return await _service.CreateProduct(model);
         }
+        [Authorize("Admin")]
         [HttpPut]
         [Route("Products/Update")]
         public async Task<ResponseModel<ProductResponse>> UpdateProduct(Guid id, ProductRequest model)

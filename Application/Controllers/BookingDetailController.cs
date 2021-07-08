@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Configurations.Middleware;
+using Application.Interfaces;
 using Data.RequestModels;
 using Data.ResponseModels;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ namespace JwtAuthentication.Controllers
         {
             _service = service;
         }
-
+        [Authorize("Admin")]
         [HttpGet]
         [Route("BookingDetails/GetAll")]
         public async Task<ResponseModel<BookingDetailResponse>> GetAllBookingDetail([FromQuery] PaginationRequest model)
@@ -25,7 +26,7 @@ namespace JwtAuthentication.Controllers
             return await _service.GetAll(model);
         }
 
-
+        [Authorize("Admin")]
         [HttpPost]
         [Route("BookingDetails/Create")]
         public async Task<ResponseModel<BookingDetailResponse>> CreateBookingDetail(BookingDetailRequest model)

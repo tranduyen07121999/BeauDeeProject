@@ -26,18 +26,21 @@ namespace JwtAuthentication.Controllers
         {
             return await _service.GetAll(model);
         }
+        [Authorize("Admin")]
         [HttpGet]
         [Route("Services/Search/{value}")]
         public async Task<ResponseModel<ServiceResponse>> SearchService([FromQuery] PaginationRequest model, string value)
         {
             return await _service.SearchService(model, value);
         }
+        [Authorize("Admin")]
         [HttpPost]
         [Route("Services/Create")]
         public async Task<ResponseModel<ServiceResponse>> CreateService(ServiceRequest model)
         {
             return await _service.CreateService(model);
         }
+        [Authorize("Admin")]
         [HttpPut]
         [Route("Services/Update")]
         public async Task<ResponseModel<ServiceResponse>> UpdateService(Guid id, ServiceRequest model)

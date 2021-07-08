@@ -1,4 +1,5 @@
-﻿using Application.Interfaces;
+﻿using Application.Configurations.Middleware;
+using Application.Interfaces;
 using Data.RequestModels;
 using Data.ResponseModels;
 using FirebaseAdmin.Auth;
@@ -23,7 +24,6 @@ namespace Application.Controllers
         {
             _userService = userService;
         }
-
         [HttpPost]
         [Route("Users/Authenticate")]
         public async Task<ResponseModel<AuthenticateResponse>> Authenticate(AuthenticateRequest model)
@@ -36,32 +36,35 @@ namespace Application.Controllers
         {
             return await _userService.AdminAuthenticate(model);
         }
-
+        [Authorize("Admin")]
         [HttpGet]
         [Route("Users/GetAll")]
         public async Task<ResponseModel<UserResponse>> GetAllUser([FromQuery] PaginationRequest model)
         {
             return await _userService.GetAll(model);
         }
+        [Authorize("Admin")]
         [HttpGet]
         [Route("Users/Search/{value}")]
         public async Task<ResponseModel<UserResponse>> SearchUser([FromQuery] PaginationRequest model, [FromRoute] string value)
         {
             return await _userService.SearchUser(model, value);
         }
+        [Authorize("Admin")]
         [HttpGet]
         [Route("Users/Get/{email}")]
         public async Task<ResponseModel<UserResponse>> GetUserByEmail([FromRoute] String email)
         {
             return await _userService.GetUserByEmail(email);
         }
-
+        [Authorize("Admin")]
         [HttpPut]
         [Route("Users/Update")]
         public async Task<ResponseModel<UserResponse>> UpdateUser(Guid id, UserRequest model)
         {
             return await _userService.UpdateUser(id, model);
         }
+
         [HttpGet("test")]
 
         public async Task<IActionResult> GetTokenAsync()
