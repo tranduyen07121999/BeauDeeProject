@@ -104,5 +104,31 @@ namespace Application.Services
                 Type = "Service"
             };
         }
+        public async Task<ResponseModel<ServiceResponse>> DisableService(Guid id)
+        {
+            var service = await _context.Services.Where(x => x.Id.Equals(id)).Select(x => new Service
+            {
+                Id = id,
+                Name = x.Name,
+                Status = "Disable",
+                Image = x.Image
+            }).FirstOrDefaultAsync();
+            _context.Services.Update(service);
+            await _context.SaveChangesAsync();
+            var list = new List<ServiceResponse>();
+            list.Add(new ServiceResponse
+            {
+                Id = service.Id,
+                Name = service.Name,
+                Status = service.Status,
+                Image = service.Image
+            });
+            return new ResponseModel<ServiceResponse>(list)
+            {
+                Status = 201,
+                Total = list.Count,
+                Type = "Service"
+            };
+        }
     }
 }

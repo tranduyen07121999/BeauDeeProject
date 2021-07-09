@@ -47,5 +47,12 @@ namespace JwtAuthentication.Controllers
         {
             return await _service.UpdateService(id, model);
         }
+        [Authorize("Admin")]
+        [HttpPut]
+        [Route("Services/Disable")]
+        public async Task<ResponseModel<ServiceResponse>> DisableService(Guid id)
+        {
+            return await _service.DisableService(id);
+        }
     }
 }

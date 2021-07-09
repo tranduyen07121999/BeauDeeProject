@@ -19,5 +19,7 @@ namespace Data.ResponseModels
         public DateTime? DayOfBirth { get; set; }
         public string Role { get; set; }
         public string Image { get; set; }
+        public string[] Service { get; set; }
+        public string[] Product { get; set; }
     }
 }

@@ -13,6 +13,7 @@ namespace Application.Interfaces
         Task<ResponseModel<ServiceResponse>> SearchService(PaginationRequest model, string value);
         Task<ResponseModel<ServiceResponse>> CreateService(ServiceRequest model);
         Task<ResponseModel<ServiceResponse>> UpdateService(Guid id, ServiceRequest model);
+        Task<ResponseModel<ServiceResponse>> DisableService(Guid id);
 
     }
 }

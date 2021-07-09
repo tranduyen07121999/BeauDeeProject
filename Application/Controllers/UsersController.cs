@@ -64,7 +64,7 @@ namespace Application.Controllers
         {
             return await _userService.UpdateUser(id, model);
         }
-        //[Authorize("Admin")]
+        [Authorize("Admin")]
         [HttpPut]
         [Route("Users/Update/Artist")]
         public async Task<ResponseModel<UserRoleResponse>> UpdateRoleArtist(Guid id, UserRoleRequest model)

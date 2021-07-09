@@ -207,6 +207,8 @@ namespace Application.Services
                 Image = u.Image,
                 MinValue = u.MinValue,
                 Role = _context.UserRoles.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Role.Name).FirstOrDefault(),
+                Service = _context.UserProductServices.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Service.Name).ToArray(),
+                Product = _context.UserProductServices.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Product.Name).ToArray(),
             }).OrderBy(x => x.DayOfBirth).Skip((model.PageNumber - 1) * model.PageSize).Take(model.PageSize).ToListAsync();
             return new ResponseModel<UserResponse>(users)
             {
@@ -230,6 +232,8 @@ namespace Application.Services
                 Image = u.Image,
                 MinValue = u.MinValue,
                 Role = _context.UserRoles.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Role.Name).FirstOrDefault(),
+                Service = _context.UserProductServices.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Service.Name).ToArray(),
+                Product = _context.UserProductServices.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Product.Name).ToArray(),
             }).OrderBy(x => x.DayOfBirth).Skip((model.PageNumber - 1) * model.PageSize).Take(model.PageSize).ToListAsync();
             return new ResponseModel<UserResponse>(users)
             {
@@ -280,6 +284,8 @@ namespace Application.Services
                     MinValue = user.MinValue,
                     Image = user.Image,
                     Role = _context.UserRoles.Where(x => x.UserId.Equals(user.Id)).Select(x => x.Role.Name).FirstOrDefault(),
+                    Service = _context.UserProductServices.Where(x => x.UserId.Equals(user.Id)).Select(x => x.Service.Name).ToArray(),
+                    Product = _context.UserProductServices.Where(x => x.UserId.Equals(user.Id)).Select(x => x.Product.Name).ToArray(),
                 });
             }
             return new ResponseModel<UserResponse>(list)
@@ -306,6 +312,8 @@ namespace Application.Services
                 Image = u.Image,
                 MinValue = u.MinValue,
                 Role = _context.UserRoles.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Role.Name).FirstOrDefault(),
+                Service = _context.UserProductServices.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Service.Name).ToArray(),
+                Product = _context.UserProductServices.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Product.Name).ToArray(),
             }).ToListAsync();
             return new ResponseModel<UserResponse>(user)
             {
