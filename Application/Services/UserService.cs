@@ -112,7 +112,7 @@ namespace Application.Services
                     Id = cuser.Id,
                     Email = cuser.Email,
                     Name = cuser.Name,
-                    Role = cuser.UserRoles.Select(x => x.Role.Name).ToArray(),
+                    Role = cuser.UserRoles.Select(x => x.Role.Name).FirstOrDefault(),
                     Uid = cuser.Uid,
                     Token = token
                 });
@@ -150,7 +150,7 @@ namespace Application.Services
                     Id = user.Id,
                     Email = user.Email,
                     Name = user.Name,
-                    Role = user.UserRoles.Select(x => x.Role.Name).ToArray(),
+                    Role = user.UserRoles.Select(x => x.Role.Name).FirstOrDefault(),
                     Uid = user.Uid,
                     Token = token
                 });
