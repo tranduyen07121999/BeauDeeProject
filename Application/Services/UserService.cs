@@ -317,7 +317,8 @@ namespace Application.Services
         public async Task<ResponseModel<UserRoleResponse>> UpdateRoleArtist(Guid id, UserRoleRequest model)
         {
             var list = new List<UserRoleResponse>();
-            var userrole = await _context.UserRoles.Where(x => x.UserId.Equals(id)).FirstOrDefaultAsync();
+            var userrole = await _context.UserRoles.Where(x => x.UserId.Equals(id))
+                .FirstOrDefaultAsync();
             _context.UserRoles.Remove(userrole);
             var cuserrole = new UserRole
             {
@@ -325,6 +326,9 @@ namespace Application.Services
                 RoleId = Guid.Parse("f5b4e129-2dd9-42d9-ada1-b23e00136a4d")
             };
             await _context.UserRoles.AddAsync(cuserrole);
+
+            
+
             var userproductservice = new UserProductService
             {
                 UserId = id,
