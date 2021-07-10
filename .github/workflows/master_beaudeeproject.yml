@@ -34,6 +34,6 @@ jobs:
       with:
         app-name: BeauDeeProject
         slot-name: Production
-        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_7D38B28879A245DC8BD8E119F596C2B8 }}
+        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_5A2CFA1EBE3F48509BDEC1A41F8D3088 }}
         package: ${{env.DOTNET_ROOT}}/myapp
 
