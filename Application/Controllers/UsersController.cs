@@ -50,7 +50,7 @@ namespace Application.Controllers
         {
             return await _userService.SearchUser(model, value);
         }
-        [Authorize("Admin")]
+        [Authorize("Admin", "Customer")]
         [HttpGet]
         [Route("Users/Get/{email}")]
         public async Task<ResponseModel<UserResponse>> GetUserByEmail([FromRoute] String email)
