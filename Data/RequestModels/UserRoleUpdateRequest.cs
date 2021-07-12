@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Data.RequestModels
 {
-    public class UserRoleRequest
+    public class UserRoleUpdateRequest
     {
-        public string Service { get; set; }
+        public string Role { get; set; }
     }
 }

@@ -20,7 +20,7 @@ namespace Application.Interfaces
         Task<ResponseModel<UserRoleResponse>> UpdateRoleArtist(Guid id, UserRoleRequest model);
         Task<ResponseModel<UserResponse>> GetUserByEmail(string email);
 
-
+        Task<ResponseModel<UserRoleResponse>> UpdateUserRole(Guid id, UserRoleUpdateRequest model);
 
 
     }

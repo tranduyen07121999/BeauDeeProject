@@ -207,8 +207,7 @@ namespace Application.Services
                 Image = u.Image,
                 MinValue = u.MinValue,
                 Role = _context.UserRoles.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Role.Name).FirstOrDefault(),
-                Service = _context.UserProductServices.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Service.Name).ToArray(),
-                Product = _context.UserProductServices.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Product.Name).ToArray(),
+                Service = _context.UserServices.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Service.Name).ToArray(),
             }).OrderBy(x => x.DayOfBirth).Skip((model.PageNumber - 1) * model.PageSize).Take(model.PageSize).ToListAsync();
             return new ResponseModel<UserResponse>(users)
             {
@@ -232,8 +231,7 @@ namespace Application.Services
                 Image = u.Image,
                 MinValue = u.MinValue,
                 Role = _context.UserRoles.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Role.Name).FirstOrDefault(),
-                Service = _context.UserProductServices.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Service.Name).ToArray(),
-                Product = _context.UserProductServices.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Product.Name).ToArray(),
+                Service = _context.UserServices.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Service.Name).ToArray(),
             }).OrderBy(x => x.DayOfBirth).Skip((model.PageNumber - 1) * model.PageSize).Take(model.PageSize).ToListAsync();
             return new ResponseModel<UserResponse>(users)
             {
@@ -284,8 +282,7 @@ namespace Application.Services
                     MinValue = user.MinValue,
                     Image = user.Image,
                     Role = _context.UserRoles.Where(x => x.UserId.Equals(user.Id)).Select(x => x.Role.Name).FirstOrDefault(),
-                    Service = _context.UserProductServices.Where(x => x.UserId.Equals(user.Id)).Select(x => x.Service.Name).ToArray(),
-                    Product = _context.UserProductServices.Where(x => x.UserId.Equals(user.Id)).Select(x => x.Product.Name).ToArray(),
+                    Service = _context.UserServices.Where(x => x.UserId.Equals(user.Id)).Select(x => x.Service.Name).ToArray(),
                 });
             }
             return new ResponseModel<UserResponse>(list)
@@ -312,8 +309,7 @@ namespace Application.Services
                 Image = u.Image,
                 MinValue = u.MinValue,
                 Role = _context.UserRoles.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Role.Name).FirstOrDefault(),
-                Service = _context.UserProductServices.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Service.Name).ToArray(),
-                Product = _context.UserProductServices.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Product.Name).ToArray(),
+                Service = _context.UserServices.Where(x => x.UserId.Equals(u.Id)).Select(x => x.Service.Name).ToArray(),
             }).ToListAsync();
             return new ResponseModel<UserResponse>(user)
             {
@@ -335,15 +331,15 @@ namespace Application.Services
             };
             await _context.UserRoles.AddAsync(cuserrole);
 
-            
 
-            var userproductservice = new UserProductService
+
+            var userservice = new Data.Entities.UserService
             {
                 UserId = id,
-                ProductId = await _context.Products.Where(x => x.Name.Equals(model.Product)).Select(x => x.Id).FirstOrDefaultAsync(),
                 ServiceId = await _context.Services.Where(x => x.Name.Equals(model.Service)).Select(x => x.Id).FirstOrDefaultAsync(),
             };
-            await _context.UserProductServices.AddAsync(userproductservice);
+
+            await _context.UserServices.AddAsync(userservice);
             await _context.SaveChangesAsync();
 
             var user = await _context.Users.Where(x => x.Id.Equals(id)).FirstOrDefaultAsync();
@@ -359,8 +355,47 @@ namespace Application.Services
                 MinValue = user.MinValue,
                 Image = user.Image,
                 Role = _context.UserRoles.Where(x => x.UserId.Equals(user.Id)).Select(x => x.Role.Name).FirstOrDefault(),
-                Service = _context.UserProductServices.Where(x => x.UserId.Equals(user.Id)).Select(x => x.Service.Name).ToArray(),
-                Product = _context.UserProductServices.Where(x => x.UserId.Equals(user.Id)).Select(x => x.Product.Name).ToArray(),
+                Service = _context.UserServices.Where(x => x.UserId.Equals(user.Id)).Select(x => x.Service.Name).ToArray(),
+            });
+            return new ResponseModel<UserRoleResponse>(list)
+            {
+                Status = 201,
+                Total = list.Count,
+                Type = "UserRole"
+            };
+        }
+
+        public async Task<ResponseModel<UserRoleResponse>> UpdateUserRole(Guid id, UserRoleUpdateRequest model)
+        {
+            var list = new List<UserRoleResponse>();
+            var userrole = await _context.UserRoles.Where(x => x.UserId.Equals(id))
+                .FirstOrDefaultAsync();
+            _context.UserRoles.Remove(userrole);
+            var roleid = _context.Roles.Where(x => x.Name.Equals(model.Role)).Select(x => x.Id).FirstOrDefault();
+            var cuserrole = new UserRole
+            {
+                UserId = id,
+                RoleId = roleid
+            };
+            var userservice = _context.UserServices.Where(x => x.UserId.Equals(id)).ToArray();
+            _context.UserServices.RemoveRange(userservice);
+            await _context.UserRoles.AddAsync(cuserrole);
+            await _context.SaveChangesAsync();
+
+            var user = await _context.Users.Where(x => x.Id.Equals(id)).Include(x => x.UserRoles).ThenInclude(x => x.Role).FirstOrDefaultAsync();
+            list.Add(new UserRoleResponse
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Uid = user.Uid,
+                Email = user.Email,
+                Phone = user.Phone,
+                DayOfBirth = user.DayOfBirth,
+                Address = user.Address,
+                MinValue = user.MinValue,
+                Image = user.Image,
+                Role = _context.UserRoles.Where(x => x.UserId.Equals(user.Id)).Select(x => x.Role.Name).FirstOrDefault(),
+                Service = _context.UserServices.Where(x => x.UserId.Equals(user.Id)).Select(x => x.Service.Name).ToArray(),
             });
             return new ResponseModel<UserRoleResponse>(list)
             {

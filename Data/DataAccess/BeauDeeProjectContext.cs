@@ -25,8 +25,8 @@ namespace Data.DataAccess
         public virtual DbSet<Service> Services { get; set; }
         public virtual DbSet<Status> Statuses { get; set; }
         public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<UserProductService> UserProductServices { get; set; }
         public virtual DbSet<UserRole> UserRoles { get; set; }
+        public virtual DbSet<UserService> UserServices { get; set; }
         public virtual DbSet<UserStatus> UserStatuses { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -172,16 +172,16 @@ namespace Data.DataAccess
                 entity.Property(e => e.Image)
                     .HasMaxLength(256)
                     .IsUnicode(false);
-                entity.Property(e => e.Password)
-                    .IsRequired()
-                    .HasMaxLength(256)
-                    .IsUnicode(false);
 
                 entity.Property(e => e.MinValue).HasColumnType("decimal(18, 0)");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(256);
+
+                entity.Property(e => e.Password)
+                    .HasMaxLength(256)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Phone)
                     .HasMaxLength(256)
@@ -192,30 +192,6 @@ namespace Data.DataAccess
                     .HasMaxLength(256)
                     .IsUnicode(false)
                     .HasColumnName("UId");
-            });
-
-            modelBuilder.Entity<UserProductService>(entity =>
-            {
-                entity.HasKey(e => new { e.UserId, e.ServiceId })
-                    .HasName("PK__UserProd__ABD9774C0C44E009");
-
-                entity.HasOne(d => d.Product)
-                    .WithMany(p => p.UserProductServices)
-                    .HasForeignKey(d => d.ProductId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UserProdu__Produ__4BAC3F29");
-
-                entity.HasOne(d => d.Service)
-                    .WithMany(p => p.UserProductServices)
-                    .HasForeignKey(d => d.ServiceId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UserProdu__Servi__4AB81AF0");
-
-                entity.HasOne(d => d.User)
-                    .WithMany(p => p.UserProductServices)
-                    .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UserProdu__UserI__49C3F6B7");
             });
 
             modelBuilder.Entity<UserRole>(entity =>
@@ -236,6 +212,24 @@ namespace Data.DataAccess
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__UserRole__UserId__32E0915F");
+            });
+
+            modelBuilder.Entity<UserService>(entity =>
+            {
+                entity.HasKey(e => new { e.UserId, e.ServiceId })
+                    .HasName("PK__UserServ__ABD9774C70AA0738");
+
+                entity.HasOne(d => d.Service)
+                    .WithMany(p => p.UserServices)
+                    .HasForeignKey(d => d.ServiceId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__UserServi__Servi__5DCAEF64");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserServices)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__UserServi__UserI__5CD6CB2B");
             });
 
             modelBuilder.Entity<UserStatus>(entity =>

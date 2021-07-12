@@ -20,6 +20,5 @@ namespace Data.ResponseModels
         public string Role { get; set; }
         public string Image { get; set; }
         public string[] Service { get; set; }
-        public string[] Product { get; set; }
     }
 }
