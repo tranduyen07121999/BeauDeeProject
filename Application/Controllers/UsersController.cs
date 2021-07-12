@@ -43,7 +43,7 @@ namespace Application.Controllers
         {
             return await _userService.GetAll(model);
         }
-        [Authorize("Admin")]
+        [Authorize("Admin", "Customer")]
         [HttpGet]
         [Route("Users/Search/{value}")]
         public async Task<ResponseModel<UserResponse>> SearchUser([FromQuery] PaginationRequest model, [FromRoute] string value)
@@ -57,7 +57,7 @@ namespace Application.Controllers
         {
             return await _userService.GetUserByEmail(email);
         }
-        [Authorize("Admin")]
+        [Authorize("Admin", "Customer")]
         [HttpPut]
         [Route("Users/Update")]
         public async Task<ResponseModel<UserResponse>> UpdateUser(Guid id, UserRequest model)
