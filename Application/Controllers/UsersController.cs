@@ -36,7 +36,7 @@ namespace Application.Controllers
         {
             return await _userService.AdminAuthenticate(model);
         }
-        //[Authorize("Admin", "Customer")]
+        [Authorize("Admin", "Customer")]
         [HttpGet]
         [Route("Users/GetAll")]
         public async Task<ResponseModel<UserResponse>> GetAllUser([FromQuery] PaginationRequest model)
@@ -64,14 +64,14 @@ namespace Application.Controllers
         {
             return await _userService.UpdateUser(id, model);
         }
-        //[Authorize("Admin")]
+        [Authorize("Admin")]
         [HttpPut]
-        [Route("Users/Update/Artist")]
+        [Route("Users/Update/Service")]
         public async Task<ResponseModel<UserRoleResponse>> UpdateRoleArtist(Guid id, UserRoleRequest model)
         {
             return await _userService.UpdateRoleArtist(id, model);
         }
-        //[Authorize("Admin")]
+        [Authorize("Admin")]
         [HttpPut]
         [Route("Users/Update/Role")]
         public async Task<ResponseModel<UserRoleResponse>> UpdateUserRole(Guid id, UserRoleUpdateRequest model)
