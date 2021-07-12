@@ -36,7 +36,7 @@ namespace Application.Controllers
         {
             return await _userService.AdminAuthenticate(model);
         }
-        [Authorize("Admin")]
+        [Authorize("Admin", "Customer")]
         [HttpGet]
         [Route("Users/GetAll")]
         public async Task<ResponseModel<UserResponse>> GetAllUser([FromQuery] PaginationRequest model)
