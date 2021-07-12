@@ -377,8 +377,11 @@ namespace Application.Services
                 UserId = id,
                 RoleId = roleid
             };
-            var userservice = _context.UserServices.Where(x => x.UserId.Equals(id)).ToArray();
-            _context.UserServices.RemoveRange(userservice);
+            if (!cuserrole.RoleId.Equals(Guid.Parse("f5b4e129-2dd9-42d9-ada1-b23e00136a4d")))
+            {
+                var userservice = _context.UserServices.Where(x => x.UserId.Equals(id)).ToArray();
+                _context.UserServices.RemoveRange(userservice);
+            }
             await _context.UserRoles.AddAsync(cuserrole);
             await _context.SaveChangesAsync();
 
