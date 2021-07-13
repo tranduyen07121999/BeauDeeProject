@@ -28,19 +28,33 @@ namespace Application.Services
                 Status = model.Status,
                 Image = model.Image
             };
-            await _context.Services.AddAsync(service);
-            await _context.SaveChangesAsync();
             var list = new List<ServiceResponse>();
-            list.Add(new ServiceResponse
+            var message = "blank";
+            var status = 500;
+            var servicename = await _context.Services.Where(x => x.Name.Equals(service.Name)).FirstOrDefaultAsync();
+            if (servicename != null)
             {
-                Id = service.Id,
-                Name = service.Name,
-                Status = service.Status,
-                Image = service.Image
-            });
+                status = 400;
+                message = "Service is already exists!";
+            }
+            else
+            {
+                message = "Successfully";
+                status = 201;
+                await _context.Services.AddAsync(service);
+                await _context.SaveChangesAsync();
+                list.Add(new ServiceResponse
+                {
+                    Id = service.Id,
+                    Name = service.Name,
+                    Status = service.Status,
+                    Image = service.Image
+                });
+            }
             return new ResponseModel<ServiceResponse>(list)
             {
-                Status = 201,
+                Message = message,
+                Status = status,
                 Total = list.Count,
                 Type = "Service"
             };

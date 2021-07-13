@@ -91,23 +91,37 @@ namespace Application.Services
                 Status = model.Status,
                 Expiration = model.Expiration
             };
-            await _context.Products.AddAsync(product);
-            await _context.SaveChangesAsync();
             var list = new List<ProductResponse>();
-            list.Add(new ProductResponse
+            var message = "blank";
+            var status = 500;
+            var servicename = await _context.Products.Where(x => x.Name.Equals(product.Name)).FirstOrDefaultAsync();
+            if (servicename != null)
             {
-                Id = product.Id,
-                Service = _context.Services.Where(x => x.Id.Equals(product.ServiceId)).Select(x => x.Name).FirstOrDefault(),
-                Name = product.Name,
-                Brand = product.Brand,
-                Price = product.Price,
-                Image = product.Image,
-                Status = product.Status,
-                Expiration = product.Expiration,
-            });
+                status = 400;
+                message = "Product is already exists!";
+            }
+            else
+            {
+                message = "Successfully";
+                status = 201;
+                await _context.Products.AddAsync(product);
+                await _context.SaveChangesAsync();
+                list.Add(new ProductResponse
+                {
+                    Id = product.Id,
+                    Service = _context.Services.Where(x => x.Id.Equals(product.ServiceId)).Select(x => x.Name).FirstOrDefault(),
+                    Name = product.Name,
+                    Brand = product.Brand,
+                    Price = product.Price,
+                    Image = product.Image,
+                    Status = product.Status,
+                    Expiration = product.Expiration,
+                });
+            }
             return new ResponseModel<ProductResponse>(list)
             {
-                Status = 201,
+                Message = message,
+                Status = status,
                 Total = list.Count,
                 Type = "Product"
             };
