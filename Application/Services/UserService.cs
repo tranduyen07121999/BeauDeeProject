@@ -95,7 +95,7 @@ namespace Application.Services
                         MinValue = null,
                         DayOfBirth = null,
                         Image = null,
-                        Password = Guid.NewGuid().ToString()
+                        Password = "admin@1234"
 
                     };
 
