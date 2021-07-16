@@ -13,7 +13,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Controllers
+namespace JwtAuthentication.Controllers
 {
     [ApiController]
     public class UsersController : ControllerBase

@@ -11,10 +11,10 @@ using System.Threading.Tasks;
 namespace JwtAuthentication.Controllers
 {
     [ApiController]
-    public class BookingDetailController : ControllerBase
+    public class BookingDetailsController : ControllerBase
     {
         private readonly IBookingDetailService _service;
-        public BookingDetailController(IBookingDetailService service)
+        public BookingDetailsController(IBookingDetailService service)
         {
             _service = service;
         }
