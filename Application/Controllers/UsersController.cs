@@ -52,10 +52,10 @@ namespace JwtAuthentication.Controllers
         }
         [Authorize("Admin", "Customer")]
         [HttpGet]
-        [Route("Users/Get/{email}")]
-        public async Task<ResponseModel<UserResponse>> GetUserByEmail([FromRoute] String email)
+        [Route("Users/Get/{uid}")]
+        public async Task<ResponseModel<UserResponse>> GetUserByUid([FromRoute] String uid)
         {
-            return await _userService.GetUserByEmail(email);
+            return await _userService.GetUserByUid(uid);
         }
         [Authorize("Admin", "Customer")]
         [HttpPut]

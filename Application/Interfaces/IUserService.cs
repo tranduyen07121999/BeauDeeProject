@@ -18,7 +18,7 @@ namespace Application.Interfaces
         Task<ResponseModel<UserResponse>> UpdateUser(Guid id, UserRequest model);
         Task<ResponseModel<UserResponse>> GetAll(PaginationRequest model);
         Task<ResponseModel<UserRoleResponse>> UpdateRoleArtist(Guid id, UserRoleRequest model);
-        Task<ResponseModel<UserResponse>> GetUserByEmail(string email);
+        Task<ResponseModel<UserResponse>> GetUserByUid(string Uid);
 
         Task<ResponseModel<UserRoleResponse>> UpdateUserRole(Guid id, UserRoleUpdateRequest model);
 

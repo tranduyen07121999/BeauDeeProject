@@ -295,9 +295,9 @@ namespace Application.Services
 
         }
 
-        public async Task<ResponseModel<UserResponse>> GetUserByEmail(string email)
+        public async Task<ResponseModel<UserResponse>> GetUserByUid(string uid)
         {
-            var user = await _context.Users.Where(u => u.Email.Equals(email)).Select(u => new UserResponse
+            var user = await _context.Users.Where(u => u.Uid.Equals(uid)).Select(u => new UserResponse
             {
                 Id = u.Id,
                 Name = u.Name,
