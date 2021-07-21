@@ -36,28 +36,28 @@ namespace JwtAuthentication.Controllers
         {
             return await _userService.AdminAuthenticate(model);
         }
-        [Authorize("Admin", "Customer")]
+        [Authorize("Admin", "Customer", "Artist")]
         [HttpGet]
         [Route("Users/GetAll")]
         public async Task<ResponseModel<UserResponse>> GetAllUser([FromQuery] PaginationRequest model)
         {
             return await _userService.GetAll(model);
         }
-        [Authorize("Admin", "Customer")]
+        [Authorize("Admin", "Customer", "Artist")]
         [HttpGet]
         [Route("Users/Search/{value}")]
         public async Task<ResponseModel<UserResponse>> SearchUser([FromQuery] PaginationRequest model, [FromRoute] string value)
         {
             return await _userService.SearchUser(model, value);
         }
-        [Authorize("Admin", "Customer")]
+        [Authorize("Admin", "Customer", "Artist")]
         [HttpGet]
         [Route("Users/Get/{uid}")]
         public async Task<ResponseModel<UserResponse>> GetUserByUid([FromRoute] String uid)
         {
             return await _userService.GetUserByUid(uid);
         }
-        [Authorize("Admin", "Customer")]
+        [Authorize("Admin", "Customer", "Artist")]
         [HttpPut]
         [Route("Users/Update")]
         public async Task<ResponseModel<UserResponse>> UpdateUser(Guid id, UserRequest model)
