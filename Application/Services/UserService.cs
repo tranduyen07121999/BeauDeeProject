@@ -105,7 +105,7 @@ namespace Application.Services
 
 
                 }
-                var cuser = await _context.Users.Where(x => x.Uid == auser.Uid).Include(x => x.UserRoles).ThenInclude(x => x.Role).FirstOrDefaultAsync();
+                var cuser = await _context.Users.Where(x => x.Uid == auser.Uid).Include(x => x.UserRoles).ThenInclude(x => x.Role).AsNoTracking().FirstOrDefaultAsync();
                 var token = generateJwtToken(cuser);
                 data.Add(new AuthenticateResponse
                 {
@@ -267,7 +267,7 @@ namespace Application.Services
                     MinValue = model.MinValue,
                     Image = model.Image,
                     Password = x.Password
-                }).FirstOrDefaultAsync();
+                }).AsNoTracking().FirstOrDefaultAsync();
                 _context.Users.Update(user);
                 await _context.SaveChangesAsync();
                 list.Add(new UserResponse

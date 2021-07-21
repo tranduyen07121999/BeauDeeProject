@@ -83,7 +83,8 @@ namespace Application
           }
         });
             });
-            services.AddDbContext<BeauDeeProjectContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<BeauDeeProjectContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+            .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
             services.Configure<AppSetting>(Configuration.GetSection("AppSettings"));
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<ISvService, SvService>();
